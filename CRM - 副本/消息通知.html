@@ -1,0 +1,485 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>消息通知</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="files/消息通知/styles.css" type="text/css" rel="stylesheet"/>
+    <script src="resources/scripts/jquery-3.2.1.min.js"></script>
+    <script src="resources/scripts/axure/axQuery.js"></script>
+    <script src="resources/scripts/axure/globals.js"></script>
+    <script src="resources/scripts/axutils.js"></script>
+    <script src="resources/scripts/axure/annotation.js"></script>
+    <script src="resources/scripts/axure/axQuery.std.js"></script>
+    <script src="resources/scripts/axure/doc.js"></script>
+    <script src="resources/scripts/messagecenter.js"></script>
+    <script src="resources/scripts/axure/events.js"></script>
+    <script src="resources/scripts/axure/recording.js"></script>
+    <script src="resources/scripts/axure/action.js"></script>
+    <script src="resources/scripts/axure/expr.js"></script>
+    <script src="resources/scripts/axure/geometry.js"></script>
+    <script src="resources/scripts/axure/flyout.js"></script>
+    <script src="resources/scripts/axure/model.js"></script>
+    <script src="resources/scripts/axure/repeater.js"></script>
+    <script src="resources/scripts/axure/sto.js"></script>
+    <script src="resources/scripts/axure/utils.temp.js"></script>
+    <script src="resources/scripts/axure/variables.js"></script>
+    <script src="resources/scripts/axure/drag.js"></script>
+    <script src="resources/scripts/axure/move.js"></script>
+    <script src="resources/scripts/axure/visibility.js"></script>
+    <script src="resources/scripts/axure/style.js"></script>
+    <script src="resources/scripts/axure/adaptive.js"></script>
+    <script src="resources/scripts/axure/tree.js"></script>
+    <script src="resources/scripts/axure/init.temp.js"></script>
+    <script src="resources/scripts/axure/legacy.js"></script>
+    <script src="resources/scripts/axure/viewer.js"></script>
+    <script src="resources/scripts/axure/math.js"></script>
+    <script src="resources/scripts/axure/jquery.nicescroll.min.js"></script>
+    <script src="data/document.js"></script>
+    <script src="files/消息通知/data.js"></script>
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+  </head>
+  <body>
+    <div id="base" class="">
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10320" class="ax_default primary_button">
+        <div id="u10320_div" class=""></div>
+        <div id="u10320_text" class="text ">
+          <p><span>点我查看官方文档</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10321" class="ax_default _文本段落">
+        <div id="u10321_div" class=""></div>
+        <div id="u10321_text" class="text ">
+          <p><span>调用企业微信消息通知API，实现消息通知提醒</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (图片 ) -->
+      <div id="u10322" class="ax_default _图片_">
+        <img id="u10322_img" class="img " src="images/消息通知/u10322.png"/>
+        <div id="u10322_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10323" class="ax_default _文本段落">
+        <div id="u10323_div" class=""></div>
+        <div id="u10323_text" class="text ">
+          <p><span style="color:#E63858;">参数说明： </span></p><p><span style="color:#AAAAAA;">title 取</span><span> 任务计划列表中的任务标题</span></p><p><span style="color:#AAAAAA;">第一个 div</span><span style="color:#7F7F7F;"> 取</span><span>任务计划列表中的任务描述（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第二个 div</span><span> 取</span><span style="color:#3858E6;"> &amp;关联信息&amp;：&amp;关联信息值&amp;&nbsp; </span><span>示例：客户：邮储银行郑州分行（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第三个 div 取 </span><span>截至时间：</span><span style="color:#3858E6;"> &amp;截至时间&amp;</span><span> （若无则省去div）</span></p><p><span style="color:#AAAAAA;">url</span><span> 任务详情页跳转链接</span></p><p><span style="color:#AAAAAA;">btntxt 取 </span><span>详情</span></p><p><span style="color:#3858E6;"><br></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10324" class="ax_default box_2">
+        <div id="u10324_div" class=""></div>
+        <div id="u10324_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10325" class="ax_default _三级标题">
+        <div id="u10325_div" class=""></div>
+        <div id="u10325_text" class="text ">
+          <p><span>拜访客户</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10326" class="ax_default _三级标题">
+        <div id="u10326_div" class=""></div>
+        <div id="u10326_text" class="text ">
+          <p><span>就关于XXX问题，与客户详谈，弄清楚客户是否有需求，是否有资金，以及客户的合···</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10327" class="ax_default _三级标题">
+        <div id="u10327_div" class=""></div>
+        <div id="u10327_text" class="text ">
+          <p><span>截至时间 2024-11-12</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10328" class="ax_default _三级标题">
+        <div id="u10328_div" class=""></div>
+        <div id="u10328_text" class="text ">
+          <p><span>商机：</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10329" class="ax_default _三级标题">
+        <div id="u10329_div" class=""></div>
+        <div id="u10329_text" class="text ">
+          <p><span>信创营业厅-ATM</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10330" class="ax_default line">
+        <img id="u10330_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10330_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10331" class="ax_default line">
+        <img id="u10331_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10331_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10332" class="ax_default _三级标题">
+        <div id="u10332_div" class=""></div>
+        <div id="u10332_text" class="text ">
+          <p><span>详情</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10333" class="ax_default _三级标题">
+        <div id="u10333_div" class=""></div>
+        <div id="u10333_text" class="text ">
+          <p><span>&gt;</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10334" class="ax_default _文本段落">
+        <div id="u10334_div" class=""></div>
+        <div id="u10334_text" class="text ">
+          <p><span>当他人指派给我任务时</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10335" class="ax_default _文本段落">
+        <div id="u10335_div" class=""></div>
+        <div id="u10335_text" class="text ">
+          <p><span style="color:#E63858;">参数说明： </span></p><p><span style="color:#AAAAAA;">title 取</span><span> 任务计划列表中的任务标题</span></p><p><span style="color:#AAAAAA;">第0个 div 取 </span><span>任务即将过期，请按时完成哦~</span></p><p><span style="color:#AAAAAA;">第一个 div</span><span style="color:#7F7F7F;"> 取</span><span>任务计划列表中的任务描述（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第二个 div</span><span> 取</span><span style="color:#3858E6;"> &amp;关联信息&amp;：&amp;关联信息值&amp;&nbsp; </span><span>示例：关联客户：邮储银行郑州分行（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第三个 div 取 </span><span>截至时间：</span><span style="color:#3858E6;"> &amp;截至时间&amp;</span><span> （若无则省去div）</span></p><p><span style="color:#AAAAAA;">url</span><span> 任务详情页跳转链接</span></p><p><span style="color:#AAAAAA;">btntxt 取 </span><span>详情</span></p><p><span style="color:#3858E6;"><br></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10336" class="ax_default box_2">
+        <div id="u10336_div" class=""></div>
+        <div id="u10336_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10337" class="ax_default _三级标题">
+        <div id="u10337_div" class=""></div>
+        <div id="u10337_text" class="text ">
+          <p><span>拜访客户</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10338" class="ax_default _三级标题">
+        <div id="u10338_div" class=""></div>
+        <div id="u10338_text" class="text ">
+          <p><span>就关于XXX问题，与客户详谈，弄清楚客户是否有需求，是否有资金，以及客户的合···</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10339" class="ax_default _三级标题">
+        <div id="u10339_div" class=""></div>
+        <div id="u10339_text" class="text ">
+          <p><span>截至时间 2024-11-12</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10340" class="ax_default _三级标题">
+        <div id="u10340_div" class=""></div>
+        <div id="u10340_text" class="text ">
+          <p><span>商机：</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10341" class="ax_default _三级标题">
+        <div id="u10341_div" class=""></div>
+        <div id="u10341_text" class="text ">
+          <p><span>信创营业厅-ATM</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10342" class="ax_default line">
+        <img id="u10342_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10342_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10343" class="ax_default line">
+        <img id="u10343_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10343_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10344" class="ax_default _三级标题">
+        <div id="u10344_div" class=""></div>
+        <div id="u10344_text" class="text ">
+          <p><span>详情</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10345" class="ax_default _三级标题">
+        <div id="u10345_div" class=""></div>
+        <div id="u10345_text" class="text ">
+          <p><span>&gt;</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10346" class="ax_default _文本段落">
+        <div id="u10346_div" class=""></div>
+        <div id="u10346_text" class="text ">
+          <p><span>当我执行的任务快过期时（下班前1小时提醒）</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10347" class="ax_default _文本段落">
+        <div id="u10347_div" class=""></div>
+        <div id="u10347_text" class="text ">
+          <p><span>任务即将过期，请按时完成哦~</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10348" class="ax_default _文本段落">
+        <div id="u10348_div" class=""></div>
+        <div id="u10348_text" class="text ">
+          <p><span style="color:#E63858;">参数说明： </span></p><p><span style="color:#AAAAAA;">title 取</span><span> 任务计划列表中的任务标题</span></p><p><span style="color:#AAAAAA;">第0个 div 取 </span><span>任务已完成</span></p><p><span style="color:#AAAAAA;">第一个 div</span><span style="color:#7F7F7F;"> 取</span><span>任务计划列表中的任务描述（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第二个 div</span><span> 取</span><span style="color:#3858E6;"> &amp;关联信息&amp;：&amp;关联信息值&amp;&nbsp; </span><span>示例：关联客户：邮储银行郑州分行（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第三个 div 取 </span><span>执行人：</span><span style="color:#3858E6;"> &amp;执行人&amp;</span><span> </span></p><p><span style="color:#AAAAAA;">url</span><span> 任务详情页跳转链接</span></p><p><span style="color:#AAAAAA;">btntxt 取 </span><span>详情</span></p><p><span style="color:#3858E6;"><br></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10349" class="ax_default box_2">
+        <div id="u10349_div" class=""></div>
+        <div id="u10349_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10350" class="ax_default _三级标题">
+        <div id="u10350_div" class=""></div>
+        <div id="u10350_text" class="text ">
+          <p><span>拜访客户</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10351" class="ax_default _三级标题">
+        <div id="u10351_div" class=""></div>
+        <div id="u10351_text" class="text ">
+          <p><span>就关于XXX问题，与客户详谈，弄清楚客户是否有需求，是否有资金，以及客户的合···</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10352" class="ax_default _三级标题">
+        <div id="u10352_div" class=""></div>
+        <div id="u10352_text" class="text ">
+          <p><span>执行人： 小张</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10353" class="ax_default _三级标题">
+        <div id="u10353_div" class=""></div>
+        <div id="u10353_text" class="text ">
+          <p><span>关联商机：</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10354" class="ax_default _三级标题">
+        <div id="u10354_div" class=""></div>
+        <div id="u10354_text" class="text ">
+          <p><span>信创营业厅-ATM</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10355" class="ax_default line">
+        <img id="u10355_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10355_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10356" class="ax_default line">
+        <img id="u10356_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10356_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10357" class="ax_default _三级标题">
+        <div id="u10357_div" class=""></div>
+        <div id="u10357_text" class="text ">
+          <p><span>详情</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10358" class="ax_default _三级标题">
+        <div id="u10358_div" class=""></div>
+        <div id="u10358_text" class="text ">
+          <p><span>&gt;</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10359" class="ax_default _文本段落">
+        <div id="u10359_div" class=""></div>
+        <div id="u10359_text" class="text ">
+          <p><span>当我指派的任务完成时</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10360" class="ax_default _文本段落">
+        <div id="u10360_div" class=""></div>
+        <div id="u10360_text" class="text ">
+          <p><span>任务已完成</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10361" class="ax_default _文本段落">
+        <div id="u10361_div" class=""></div>
+        <div id="u10361_text" class="text ">
+          <p><span style="color:#E63858;">参数说明： </span></p><p><span style="color:#AAAAAA;">title 取</span><span> 任务计划列表中的任务标题</span></p><p><span style="color:#AAAAAA;">第0个 div 取 </span><span>任务即将过期提醒</span></p><p><span style="color:#AAAAAA;">第一个 div</span><span style="color:#7F7F7F;"> 取</span><span>任务计划列表中的任务描述（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第二个 div</span><span> 取</span><span style="color:#3858E6;"> &amp;关联信息&amp;：&amp;关联信息值&amp;&nbsp; </span><span>示例：关联客户：邮储银行郑州分行（若无则省去div）</span></p><p><span style="color:#AAAAAA;">第三个 div 取 </span><span>执行人：</span><span style="color:#3858E6;"> &amp;执行人&amp;</span><span> </span></p><p><span style="color:#AAAAAA;">url</span><span> 任务详情页跳转链接</span></p><p><span style="color:#AAAAAA;">btntxt 取 </span><span>详情</span></p><p><span style="color:#3858E6;"><br></span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10362" class="ax_default box_2">
+        <div id="u10362_div" class=""></div>
+        <div id="u10362_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10363" class="ax_default _三级标题">
+        <div id="u10363_div" class=""></div>
+        <div id="u10363_text" class="text ">
+          <p><span>拜访客户</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10364" class="ax_default _三级标题">
+        <div id="u10364_div" class=""></div>
+        <div id="u10364_text" class="text ">
+          <p><span>就关于XXX问题，与客户详谈，弄清楚客户是否有需求，是否有资金，以及客户的合···</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10365" class="ax_default _三级标题">
+        <div id="u10365_div" class=""></div>
+        <div id="u10365_text" class="text ">
+          <p><span>执行人： 小张</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10366" class="ax_default _三级标题">
+        <div id="u10366_div" class=""></div>
+        <div id="u10366_text" class="text ">
+          <p><span>商机：</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10367" class="ax_default _三级标题">
+        <div id="u10367_div" class=""></div>
+        <div id="u10367_text" class="text ">
+          <p><span>信创营业厅-ATM</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10368" class="ax_default line">
+        <img id="u10368_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10368_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (线段) -->
+      <div id="u10369" class="ax_default line">
+        <img id="u10369_img" class="img " src="images/消息通知/u10330.svg"/>
+        <div id="u10369_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10370" class="ax_default _三级标题">
+        <div id="u10370_div" class=""></div>
+        <div id="u10370_text" class="text ">
+          <p><span>详情</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10371" class="ax_default _三级标题">
+        <div id="u10371_div" class=""></div>
+        <div id="u10371_text" class="text ">
+          <p><span>&gt;</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10372" class="ax_default _文本段落">
+        <div id="u10372_div" class=""></div>
+        <div id="u10372_text" class="text ">
+          <p><span>当我指派的任务快过期时（下班前1小时提醒）</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u10373" class="ax_default _文本段落">
+        <div id="u10373_div" class=""></div>
+        <div id="u10373_text" class="text ">
+          <p><span>任务即将过期提醒</span></p>
+        </div>
+      </div>
+    </div>
+    <script src="resources/scripts/axure/ios.js"></script>
+  </body>
+</html>
