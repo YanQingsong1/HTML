@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- 允许跨域连接和 eval -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         style-src 'self' 'unsafe-inline';
@@ -12,6 +11,27 @@
     ">
     <title>Axure项目分享中心</title>
     <style>
+        /* 新增搜索框样式 */
+        .search-box {
+            margin: 20px 0;
+        }
+
+        .search-box input {
+            padding: 8px 12px;
+            border: 1px solid #dcdde1;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* 新增项目更新时间样式 */
+        .project-date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        /* 原有样式保持不变... */
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
@@ -99,6 +119,10 @@
     <div class="header">
         <h1>📁 Axure项目分享中心</h1>
         <p>当前服务器地址：<span id="server-address"></span></p>
+        <!-- 新增搜索框 -->
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="搜索项目...">
+        </div>
     </div>
 
     <div id="loading">🔄 正在扫描项目目录...</div>
@@ -115,15 +139,14 @@
             validExtensions: ['html', 'htm']                 // 有效文件扩展名
         };
 
-        // 替换为你的 GitHub 用户名和仓库名
         const GITHUB_USER = 'YanQingsong1';
         const GITHUB_REPO = 'HTML';
         const GITHUB_PAGES_URL = `https://${GITHUB_USER}.github.io/${GITHUB_REPO}`;
 
-        // 核心功能
         class ProjectManager {
             constructor() {
                 this.serverAddress = GITHUB_PAGES_URL;
+                this.allProjects = []; // 缓存所有项目数据
                 this.init();
             }
 
@@ -131,7 +154,11 @@
                 try {
                     document.getElementById('server-address').textContent = this.serverAddress;
                     const projects = await this.scanProjects();
-                    this.renderProjects(projects);
+                    this.allProjects = projects;
+                    // 初始排序（按更新时间降序）
+                    const sortedProjects = this.sortByUpdateTime(projects);
+                    this.renderProjects(sortedProjects);
+                    this.initSearch(); // 初始化搜索功能
                 } catch (error) {
                     this.showError(`加载失败，请检查服务器状态。具体错误信息：${error.message}`);
                     console.error('Error:', error);
@@ -149,16 +176,19 @@
 
                     return await Promise.all(
                         contents
-                           .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
-                           .map(async dir => {
+                            .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
+                            .map(async dir => {
                                 const indexUrl = `${GITHUB_PAGES_URL}/${dir.name}/index.html`;
                                 try {
-                                    const hasIndex = await fetch(indexUrl).then(res => res.ok);
-                                    if (hasIndex) {
+                                    const res = await fetch(indexUrl);
+                                    if (res.ok) {
+                                        // 获取文件最后修改时间
+                                        const lastModified = res.headers.get('Last-Modified');
                                         return {
                                             path: dir.name,
                                             name: dir.name,
-                                            url: indexUrl
+                                            url: indexUrl,
+                                            lastModified: lastModified ? new Date(lastModified) : null
                                         };
                                     }
                                 } catch (error) {
@@ -169,6 +199,28 @@
                 } catch (error) {
                     throw new Error(`扫描项目时出错：${error.message}`);
                 }
+            }
+
+            // 按更新时间排序（降序）
+            sortByUpdateTime(projects) {
+                return projects.sort((a, b) => {
+                    if (!a.lastModified || !b.lastModified) return 0;
+                    return b.lastModified.getTime() - a.lastModified.getTime();
+                });
+            }
+
+            // 初始化搜索功能
+            initSearch() {
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    // 过滤并排序
+                    const filteredProjects = this.allProjects
+                        .filter(project => project.name.toLowerCase().includes(query))
+                        .sort((a, b) => b.lastModified?.getTime() - a.lastModified?.getTime());
+
+                    this.renderProjects(filteredProjects);
+                });
             }
 
             renderProjects(projects) {
@@ -184,7 +236,8 @@
                 container.innerHTML = projects.map((project, index) => `
                     <div class="project-box">
                         <div class="project-title">
-                            <span>📂 项目 ${index + 1}：${project.name}</span>
+                            <span>📂 ${project.name}</span>
+                            <span class="project-date">更新时间：${project.lastModified ? project.lastModified.toLocaleString() : '未知'}</span>
                         </div>
                         <div class="url-box">
                             <input type="text" 
@@ -204,7 +257,7 @@
             }
         }
 
-        // 实用功能
+        // 实用功能保持不变...
         function copyUrl(elementId) {
             const input = document.getElementById(elementId);
             input.select();
@@ -234,7 +287,6 @@
             setTimeout(() => toast.remove(), 2000);
         }
 
-        // 初始化
         window.onload = () => new ProjectManager();
     </script>
 </body>
