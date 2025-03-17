@@ -127,31 +127,42 @@
                     const projects = await this.scanProjects();
                     this.renderProjects(projects);
                 } catch (error) {
-                    this.showError('加载失败，请检查服务器状态');
+                    this.showError(`加载失败，请检查服务器状态。具体错误信息：${error.message}`);
                     console.error('Error:', error);
                 }
             }
 
             async scanProjects() {
                 const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents`;
-                const response = await fetch(API_URL);
-                const contents = await response.json();
+                try {
+                    const response = await fetch(API_URL);
+                    if (!response.ok) {
+                        throw new Error(`请求 GitHub API 失败，状态码：${response.status}`);
+                    }
+                    const contents = await response.json();
 
-                return await Promise.all(
-                    contents
-                        .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
-                        .map(async dir => {
-                            const indexUrl = `${GITHUB_PAGES_URL}/${dir.name}/index.html`;
-                            const hasIndex = await fetch(indexUrl).then(res => res.ok);
-                            if (hasIndex) {
-                                return {
-                                    path: dir.name,
-                                    name: dir.name,
-                                    url: indexUrl
-                                };
-                            }
-                        })
-                ).then(results => results.filter(Boolean));
+                    return await Promise.all(
+                        contents
+                            .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
+                            .map(async dir => {
+                                const indexUrl = `${GITHUB_PAGES_URL}/${dir.name}/index.html`;
+                                try {
+                                    const hasIndex = await fetch(indexUrl).then(res => res.ok);
+                                    if (hasIndex) {
+                                        return {
+                                            path: dir.name,
+                                            name: dir.name,
+                                            url: indexUrl
+                                        };
+                                    }
+                                } catch (error) {
+                                    console.error(`检查 ${indexUrl} 时出错：`, error);
+                                }
+                            })
+                    ).then(results => results.filter(Boolean));
+                } catch (error) {
+                    throw new Error(`扫描项目时出错：${error.message}`);
+                }
             }
 
             renderProjects(projects) {
