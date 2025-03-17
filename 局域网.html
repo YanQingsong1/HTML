@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
     <title>Axure项目分享中心</title>
     <style>
         :root {
@@ -109,15 +108,10 @@
             validExtensions: ['html', 'htm']                 // 有效文件扩展名
         };
 
-        // 替换为你的 GitHub 用户名和仓库名
-        const GITHUB_USER = 'YanQingsong1';
-        const GITHUB_REPO = 'HTML';
-        const GITHUB_PAGES_URL = `https://${GITHUB_USER}.github.io/${GITHUB_REPO}`;
-
         // 核心功能
         class ProjectManager {
             constructor() {
-                this.serverAddress = GITHUB_PAGES_URL;
+                this.serverAddress = window.location.origin;
                 this.init();
             }
 
@@ -133,25 +127,75 @@
             }
 
             async scanProjects() {
-                const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents`;
-                const response = await fetch(API_URL);
-                const contents = await response.json();
+                const response = await fetch('/');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
 
-                return await Promise.all(
-                    contents
-                        .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
-                        .map(async dir => {
-                            const indexUrl = `${GITHUB_PAGES_URL}/${dir.name}/index.html`;
-                            const hasIndex = await fetch(indexUrl).then(res => res.ok);
-                            if (hasIndex) {
-                                return {
-                                    path: dir.name,
-                                    name: dir.name,
-                                    url: indexUrl
-                                };
-                            }
-                        })
-                ).then(results => results.filter(Boolean));
+                return await Promise.all(Array.from(doc.querySelectorAll('a'))
+                   .map(link => link.href.replace(this.serverAddress, ''))
+                   .filter(path => this.isValidProject(path))
+                   .map(async (path) => {
+                        const hasIndexHtml = await this.hasIndexHtml(path);
+                        if (hasIndexHtml) {
+                            return this.processPath(path);
+                        }
+                        return null;
+                    })
+                   .filter(project => project !== null));
+            }
+
+            isValidProject(path) {
+                return path.startsWith('/') &&
+                    !CONFIG.excludeDirs.some(exclude => path.includes(exclude)) &&
+                    !path.includes('.');
+            }
+
+            async hasIndexHtml(path) {
+                try {
+                    const response = await fetch(`${this.serverAddress}${path}/index.html`);
+                    return response.ok;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            async processPath(path) {
+                try {
+                    // 获取自定义名称
+                    const customName = await this.getCustomName(path);
+
+                    return {
+                        path,
+                        name: customName || this.cleanPathName(path),
+                        url: `${this.serverAddress}${path}/index.html`
+                    };
+                } catch (error) {
+                    return {
+                        path,
+                        name: this.cleanPathName(path),
+                        url: `${this.serverAddress}${path}/index.html`
+                    };
+                }
+            }
+
+            async getCustomName(path) {
+                const response = await fetch(`${path}.projectname`);
+                return response.ok ? await response.text() : null;
+            }
+
+            cleanPathName(path) {
+                try {
+                    return decodeURIComponent(path)
+                       .replace(/\//g, '')
+                       .replace(/%20/g, ' ')
+                       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_（）()\-]/g, '');
+                } catch {
+                    return path
+                       .replace(/\//g, '')
+                       .replace(/%20/g, ' ')
+                       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_（）()\-]/g, '');
+                }
             }
 
             renderProjects(projects) {
