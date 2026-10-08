@@ -3,266 +3,139 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Axure项目分享中心</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-        }
-
-        body {
-            font-family: "Microsoft Yahei", Arial, sans-serif;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #f5f6fa;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-
-        #loading {
-            color: #7f8c8d;
-            margin: 20px;
-            text-align: center;
-        }
-
-        .project-box {
-            border: 1px solid #dcdde1;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .project-box:hover {
-            transform: translateY(-2px);
-        }
-
-        .project-title {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .url-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #dcdde1;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        .error-message {
-            color: #e74c3c;
-            text-align: center;
-            padding: 20px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Axure 项目分享中心</title>
+    <link rel="stylesheet" href="theme.css">
 </head>
 
-<body>
-    <div class="header">
-        <h1>📁 Axure项目分享中心</h1>
-        <p>当前服务器地址：<span id="server-address"></span></p>
+<body class="is-locked">
+    <!-- 极光背景 -->
+    <div class="aurora">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
     </div>
 
-    <div id="loading">🔄 正在扫描项目目录...</div>
-    <div id="projects-container"></div>
-    <div id="error-message" class="error-message"></div>
+    <!-- 登录门禁 -->
+    <div class="login-wrap" id="login-overlay">
+        <div class="card login-card animate-in">
+            <div class="login-head">
+                <div class="icon-tile icon-tile-brand">🔒</div>
+                <h2 class="title-m">登录验证</h2>
+                <p class="caption">请输入账号密码以访问项目目录</p>
+            </div>
+            <form id="login-form" autocomplete="off">
+                <label class="field-label">账号</label>
+                <input class="field" id="login-username" type="text" placeholder="请输入账号" autocomplete="username">
+                <label class="field-label" style="margin-top: 16px;">密码</label>
+                <input class="field" id="login-password" type="password" placeholder="请输入密码" autocomplete="current-password">
+                <label class="checkbox-row">
+                    <input type="checkbox" id="login-remember">
+                    <span>7 天内免登录</span>
+                </label>
+                <button class="btn btn-primary btn-block" type="submit">登 录</button>
+                <div class="login-error" id="login-error"></div>
+            </form>
+        </div>
+    </div>
 
+    <button id="logout-btn" class="btn btn-secondary btn-sm logout-btn" onclick="logout()">退出登录</button>
+
+    <main class="app">
+        <header class="app-header animate-in">
+            <h1 class="title-xl">📁 Axure项目分享中心</h1>
+            <p class="subtitle">当前服务器地址：<span class="mono" id="server-address">—</span></p>
+            <div class="search-wrap">
+                <input class="field" id="search-input" type="text" placeholder="搜索项目…">
+            </div>
+        </header>
+
+        <div id="loading" class="card loading-card animate-in delay-3">
+            <div class="skeleton" style="width: 40%; margin: 0 auto 16px;"></div>
+            <div class="skeleton" style="width: 70%; margin: 0 auto;"></div>
+            <p class="caption" style="margin-top: 16px;">正在扫描项目目录…</p>
+        </div>
+
+        <div id="error-message" class="card error-card hidden"></div>
+        <div id="projects-container" class="grid-cards"></div>
+    </main>
+
+    <script src="app-common.js"></script>
     <script>
-        // 版本控制
-        const VERSION = '2.1';
-
-        // 配置项
-        const CONFIG = {
-            excludeDirs: ['share_page.html', 'favicon.ico'], // 排除文件/目录
-            validExtensions: ['html', 'htm']                 // 有效文件扩展名
-        };
-
-        // 核心功能
         class ProjectManager {
             constructor() {
                 this.serverAddress = window.location.origin;
+                this.allProjects = [];
                 this.init();
             }
 
             async init() {
                 try {
                     document.getElementById('server-address').textContent = this.serverAddress;
-                    const projects = await this.scanProjects();
-                    this.renderProjects(projects);
+                    this.allProjects = await this.scanProjects();
+                    renderProjects(this.allProjects);
+                    this.initSearch();
                 } catch (error) {
-                    this.showError('加载失败，请检查服务器状态');
+                    showError(error.message || '请检查服务器状态');
                     console.error('Error:', error);
                 }
             }
 
+            initSearch() {
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.trim().toLowerCase();
+                    const matched = this.allProjects.filter(project =>
+                        project.name.toLowerCase().includes(query));
+                    renderProjects(matched, '没有匹配的项目，换个关键词试试。');
+                });
+            }
+
             async scanProjects() {
+                // python http.server 请求 / 时返回根目录 index.html 而非目录列表，
+                // 因此优先读取 axureyun.bat 生成的项目清单
+                try {
+                    const response = await fetch(`projects.json?t=${Date.now()}`);
+                    if (response.ok) {
+                        const list = await response.json();
+                        return list.map(item => ({
+                            name: item.name,
+                            subtitle: '静态原型 · index.html',
+                            url: `${this.serverAddress}${item.path}index.html`
+                        }));
+                    }
+                } catch (error) {
+                    console.warn('projects.json 读取失败，回退到目录列表解析:', error);
+                }
+
+                // 回退：解析目录列表（适用于根目录无 index.html 的静态服务器）
+                return await this.scanFromDirectoryListing();
+            }
+
+            async scanFromDirectoryListing() {
                 const response = await fetch('/');
                 const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
+                const doc = new DOMParser().parseFromString(html, 'text/html');
 
-                return await Promise.all(Array.from(doc.querySelectorAll('a'))
-                   .map(link => link.href.replace(this.serverAddress, ''))
-                   .filter(path => this.isValidProject(path))
-                   .map(async (path) => {
-                        const hasIndexHtml = await this.hasIndexHtml(path);
-                        if (hasIndexHtml) {
-                            return this.processPath(path);
-                        }
-                        return null;
-                    })
-                   .filter(project => project !== null));
-            }
+                const paths = Array.from(doc.querySelectorAll('a'))
+                    .map(link => link.getAttribute('href'))
+                    .filter(href => href && href.endsWith('/') && !href.includes('.'))
+                    .map(href => href.startsWith('/') ? href : `/${href}`);
 
-            isValidProject(path) {
-                return path.startsWith('/') &&
-                    !CONFIG.excludeDirs.some(exclude => path.includes(exclude)) &&
-                    !path.includes('.');
-            }
-
-            async hasIndexHtml(path) {
-                try {
-                    const response = await fetch(`${this.serverAddress}${path}/index.html`);
-                    return response.ok;
-                } catch (error) {
-                    return false;
-                }
-            }
-
-            async processPath(path) {
-                try {
-                    // 获取自定义名称
-                    const customName = await this.getCustomName(path);
-
+                const results = await Promise.all(paths.map(async (path) => {
+                    const res = await fetch(`${this.serverAddress}${path}index.html`);
+                    if (!res.ok) return null;
                     return {
-                        path,
-                        name: customName || this.cleanPathName(path),
-                        url: `${this.serverAddress}${path}/index.html`
+                        name: decodeURIComponent(path).replace(/\//g, ''),
+                        subtitle: '静态原型 · index.html',
+                        url: `${this.serverAddress}${path}index.html`
                     };
-                } catch (error) {
-                    return {
-                        path,
-                        name: this.cleanPathName(path),
-                        url: `${this.serverAddress}${path}/index.html`
-                    };
-                }
-            }
-
-            async getCustomName(path) {
-                const response = await fetch(`${path}.projectname`);
-                return response.ok ? await response.text() : null;
-            }
-
-            cleanPathName(path) {
-                try {
-                    return decodeURIComponent(path)
-                       .replace(/\//g, '')
-                       .replace(/%20/g, ' ')
-                       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_（）()\-]/g, '');
-                } catch {
-                    return path
-                       .replace(/\//g, '')
-                       .replace(/%20/g, ' ')
-                       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_（）()\-]/g, '');
-                }
-            }
-
-            renderProjects(projects) {
-                const container = document.getElementById('projects-container');
-                const loading = document.getElementById('loading');
-
-                if (!projects.length) {
-                    loading.innerHTML = "📭 没有找到项目";
-                    return;
-                }
-
-                loading.style.display = 'none';
-                container.innerHTML = projects.map((project, index) => `
-                    <div class="project-box">
-                        <div class="project-title">
-                            <span>📂 项目 ${index + 1}：${project.name}</span>
-                        </div>
-                        <div class="url-box">
-                            <input type="text" 
-                                   id="url-${index}" 
-                                   value="${project.url}" 
-                                   readonly>
-                            <button onclick="copyUrl('url-${index}')">复制链接</button>
-                            <button onclick="openProjectUrl('${project.url}')">打开链接</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            showError(message) {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('error-message').textContent = message;
+                }));
+                return results.filter(Boolean);
             }
         }
 
-        // 实用功能
-        function copyUrl(elementId) {
-            const input = document.getElementById(elementId);
-            input.select();
-            document.execCommand('copy');
-            showToast('✅ 链接已复制到剪贴板');
-        }
-
-        function openProjectUrl(url) {
-            window.open(url, '_blank');
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style = `
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: rgba(0, 0, 0, 0.8);
-                color: white;
-                padding: 10px 20px;
-                border-radius: 5px;
-                z-index: 1000;
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
-
-        // 初始化
-        window.onload = () => new ProjectManager();
+        window.onload = () => requireLogin(() => new ProjectManager());
     </script>
 </body>
 

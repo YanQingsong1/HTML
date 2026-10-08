@@ -3,291 +3,175 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         style-src 'self' 'unsafe-inline';
         script-src 'self' 'unsafe-inline' 'unsafe-eval';
         connect-src 'self' https://api.github.com;
     ">
-    <title>Axure项目分享中心</title>
-    <style>
-        /* 新增搜索框样式 */
-        .search-box {
-            margin: 20px 0;
-        }
-
-        .search-box input {
-            padding: 8px 12px;
-            border: 1px solid #dcdde1;
-            border-radius: 4px;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* 新增项目更新时间样式 */
-        .project-date {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-
-        /* 原有样式保持不变... */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-        }
-
-        body {
-            font-family: "Microsoft Yahei", Arial, sans-serif;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #f5f6fa;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-
-        #loading {
-            color: #7f8c8d;
-            margin: 20px;
-            text-align: center;
-        }
-
-        .project-box {
-            border: 1px solid #dcdde1;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .project-box:hover {
-            transform: translateY(-2px);
-        }
-
-        .project-title {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .url-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #dcdde1;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        .error-message {
-            color: #e74c3c;
-            text-align: center;
-            padding: 20px;
-        }
-    </style>
+    <title>Axure 项目分享中心</title>
+    <link rel="stylesheet" href="theme.css">
 </head>
 
-<body>
-    <div class="header">
-        <h1>📁 Axure项目分享中心</h1>
-        <p>当前服务器地址：<span id="server-address"></span></p>
-        <!-- 新增搜索框 -->
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="搜索项目...">
+<body class="is-locked">
+    <!-- 极光背景 -->
+    <div class="aurora">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+    </div>
+
+    <!-- 登录门禁 -->
+    <div class="login-wrap" id="login-overlay">
+        <div class="card login-card animate-in">
+            <div class="login-head">
+                <div class="icon-tile icon-tile-brand">🔒</div>
+                <h2 class="title-m">登录验证</h2>
+                <p class="caption">请输入账号密码以访问项目目录</p>
+            </div>
+            <form id="login-form" autocomplete="off">
+                <label class="field-label">账号</label>
+                <input class="field" id="login-username" type="text" placeholder="请输入账号" autocomplete="username">
+                <label class="field-label" style="margin-top: 16px;">密码</label>
+                <input class="field" id="login-password" type="password" placeholder="请输入密码" autocomplete="current-password">
+                <label class="checkbox-row">
+                    <input type="checkbox" id="login-remember">
+                    <span>7 天内免登录</span>
+                </label>
+                <button class="btn btn-primary btn-block" type="submit">登 录</button>
+                <div class="login-error" id="login-error"></div>
+            </form>
         </div>
     </div>
 
-    <div id="loading">🔄 正在扫描项目目录...</div>
-    <div id="projects-container"></div>
-    <div id="error-message" class="error-message"></div>
+    <button id="logout-btn" class="btn btn-secondary btn-sm logout-btn" onclick="logout()">退出登录</button>
 
+    <main class="app">
+        <header class="app-header animate-in">
+            <div class="eyebrow">Axure Project Hub</div>
+            <h1 class="title-xl">原型共享 · GitHub Pages</h1>
+            <p class="subtitle">托管在 GitHub Pages 上的原型目录，按更新时间排序，支持搜索与一键复制。</p>
+        </header>
+
+        <section class="bento">
+            <div class="card animate-in delay-1">
+                <p class="caption">站点地址</p>
+                <div class="hero-row" style="margin-top: 12px;">
+                    <div class="hero-url mono" id="server-address">—</div>
+                    <button class="btn btn-secondary btn-sm" onclick="copyServerAddress()">复制地址</button>
+                </div>
+                <hr class="divider">
+                <input class="field" id="search-input" type="text" placeholder="搜索项目…">
+            </div>
+
+            <div class="card animate-in delay-2">
+                <p class="caption">已发布项目</p>
+                <div class="stat-value"><span id="stat-count">0</span> 个</div>
+                <hr class="divider">
+                <p class="caption" id="last-scan">最近更新：—</p>
+            </div>
+        </section>
+
+        <div id="loading" class="card loading-card animate-in delay-3">
+            <div class="skeleton" style="width: 40%; margin: 0 auto 16px;"></div>
+            <div class="skeleton" style="width: 70%; margin: 0 auto;"></div>
+            <p class="caption" style="margin-top: 16px;">正在从 GitHub 获取项目列表…</p>
+        </div>
+
+        <div id="error-message" class="card error-card hidden"></div>
+        <div id="projects-container" class="grid-cards"></div>
+    </main>
+
+    <script src="app-common.js"></script>
     <script>
-        // 版本控制
-        const VERSION = '2.1';
-
-        // 配置项
-        const CONFIG = {
-            excludeDirs: ['share_page.html', 'favicon.ico'], // 排除文件/目录
-            validExtensions: ['html', 'htm']                 // 有效文件扩展名
-        };
-
         const GITHUB_USER = 'YanQingsong1';
         const GITHUB_REPO = 'HTML';
-        const GITHUB_PAGES_URL = `https://${GITHUB_USER}.github.io/${GITHUB_REPO}`;
+        const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents`;
 
-        class ProjectManager {
+        function copyServerAddress() {
+            copyText(document.getElementById('server-address').textContent.trim());
+        }
+
+        class GitHubProjectManager {
             constructor() {
-                this.serverAddress = GITHUB_PAGES_URL;
-                this.allProjects = []; // 缓存所有项目数据
+                this.serverAddress = `https://${GITHUB_USER}.github.io/${GITHUB_REPO}`;
+                this.allProjects = [];
                 this.init();
             }
 
             async init() {
                 try {
                     document.getElementById('server-address').textContent = this.serverAddress;
-                    const projects = await this.scanProjects();
-                    this.allProjects = projects;
-                    // 初始排序（按更新时间降序）
-                    const sortedProjects = this.sortByUpdateTime(projects);
-                    this.renderProjects(sortedProjects);
-                    this.initSearch(); // 初始化搜索功能
+                    this.allProjects = await this.scanProjects();
+                    renderProjects(this.sortByUpdateTime(this.allProjects));
+                    this.updateStats(this.allProjects);
+                    this.initSearch();
                 } catch (error) {
-                    this.showError(`加载失败，请检查服务器状态。具体错误信息：${error.message}`);
+                    showError(error.message || '请检查网络或 GitHub 接口状态');
                     console.error('Error:', error);
                 }
             }
 
             async scanProjects() {
-                const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents`;
-                try {
-                    const response = await fetch(API_URL);
-                    if (!response.ok) {
-                        throw new Error(`请求 GitHub API 失败，状态码：${response.status}`);
-                    }
-                    const contents = await response.json();
-
-                    return await Promise.all(
-                        contents
-                            .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
-                            .map(async dir => {
-                                const indexUrl = `${GITHUB_PAGES_URL}/${dir.name}/index.html`;
-                                try {
-                                    const res = await fetch(indexUrl);
-                                    if (res.ok) {
-                                        // 获取文件最后修改时间
-                                        const lastModified = res.headers.get('Last-Modified');
-                                        return {
-                                            path: dir.name,
-                                            name: dir.name,
-                                            url: indexUrl,
-                                            lastModified: lastModified ? new Date(lastModified) : null
-                                        };
-                                    }
-                                } catch (error) {
-                                    console.error(`检查 ${indexUrl} 时出错：`, error);
-                                }
-                            })
-                    ).then(results => results.filter(Boolean));
-                } catch (error) {
-                    throw new Error(`扫描项目时出错：${error.message}`);
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`请求 GitHub API 失败（状态码 ${response.status}）`);
                 }
+                const contents = await response.json();
+
+                const results = await Promise.all(
+                    contents
+                        .filter(item => item.type === 'dir' && !item.name.startsWith('.'))
+                        .map(async dir => {
+                            const indexUrl = `${this.serverAddress}/${encodeURIComponent(dir.name)}/index.html`;
+                            try {
+                                const res = await fetch(indexUrl);
+                                if (!res.ok) return null;
+                                const lastModified = res.headers.get('Last-Modified');
+                                return {
+                                    name: dir.name,
+                                    subtitle: lastModified
+                                        ? `更新时间：${new Date(lastModified).toLocaleString()}`
+                                        : '静态原型 · index.html',
+                                    date: lastModified ? new Date(lastModified) : null,
+                                    url: indexUrl
+                                };
+                            } catch {
+                                return null;
+                            }
+                        })
+                );
+                return results.filter(Boolean);
             }
 
-            // 按更新时间排序（降序）
             sortByUpdateTime(projects) {
-                return projects.sort((a, b) => {
-                    if (!a.lastModified || !b.lastModified) return 0;
-                    return b.lastModified.getTime() - a.lastModified.getTime();
-                });
+                return [...projects].sort((a, b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
             }
 
-            // 初始化搜索功能
+            updateStats(projects) {
+                setStats(projects.length);
+                const latest = projects
+                    .map(p => p.date)
+                    .filter(Boolean)
+                    .sort((a, b) => b.getTime() - a.getTime())[0];
+                document.getElementById('last-scan').textContent =
+                    `最近更新：${latest ? latest.toLocaleString() : '未知'}`;
+            }
+
             initSearch() {
                 const searchInput = document.getElementById('search-input');
                 searchInput.addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase();
-                    // 过滤并排序
-                    const filteredProjects = this.allProjects
-                        .filter(project => project.name.toLowerCase().includes(query))
-                        .sort((a, b) => b.lastModified?.getTime() - a.lastModified?.getTime());
-
-                    this.renderProjects(filteredProjects);
+                    const query = e.target.value.trim().toLowerCase();
+                    const matched = this.allProjects
+                        .filter(project => project.name.toLowerCase().includes(query));
+                    this.updateStats(matched);
+                    renderProjects(this.sortByUpdateTime(matched));
                 });
             }
-
-            renderProjects(projects) {
-                const container = document.getElementById('projects-container');
-                const loading = document.getElementById('loading');
-
-                if (!projects.length) {
-                    loading.innerHTML = "📭 没有找到项目";
-                    return;
-                }
-
-                loading.style.display = 'none';
-                container.innerHTML = projects.map((project, index) => `
-                    <div class="project-box">
-                        <div class="project-title">
-                            <span>📂 ${project.name}</span>
-                            <span class="project-date">更新时间：${project.lastModified ? project.lastModified.toLocaleString() : '未知'}</span>
-                        </div>
-                        <div class="url-box">
-                            <input type="text" 
-                                   id="url-${index}" 
-                                   value="${project.url}" 
-                                   readonly>
-                            <button onclick="copyUrl('url-${index}')">复制链接</button>
-                            <button onclick="openProjectUrl('${project.url}')">打开链接</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            showError(message) {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('error-message').textContent = message;
-            }
         }
 
-        // 实用功能保持不变...
-        function copyUrl(elementId) {
-            const input = document.getElementById(elementId);
-            input.select();
-            document.execCommand('copy');
-            showToast('✅ 链接已复制到剪贴板');
-        }
-
-        function openProjectUrl(url) {
-            window.open(url, '_blank');
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style = `
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: rgba(0, 0, 0, 0.8);
-                color: white;
-                padding: 10px 20px;
-                border-radius: 5px;
-                z-index: 1000;
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
-
-        window.onload = () => new ProjectManager();
+        window.onload = () => requireLogin(() => new GitHubProjectManager());
     </script>
 </body>
 
