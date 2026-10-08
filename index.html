@@ -49,29 +49,12 @@
 
     <main class="app">
         <header class="app-header animate-in">
-            <div class="eyebrow">Axure Project Hub</div>
-            <h1 class="title-xl">原型共享 · GitHub Pages</h1>
-            <p class="subtitle">托管在 GitHub Pages 上的原型目录，按更新时间排序，支持搜索与一键复制。</p>
-        </header>
-
-        <section class="bento">
-            <div class="card animate-in delay-1">
-                <p class="caption">站点地址</p>
-                <div class="hero-row" style="margin-top: 12px;">
-                    <div class="hero-url mono" id="server-address">—</div>
-                    <button class="btn btn-secondary btn-sm" onclick="copyServerAddress()">复制地址</button>
-                </div>
-                <hr class="divider">
+            <h1 class="title-xl">📁 Axure项目分享中心</h1>
+            <p class="subtitle">当前服务器地址：<span class="mono" id="server-address">—</span></p>
+            <div class="search-wrap">
                 <input class="field" id="search-input" type="text" placeholder="搜索项目…">
             </div>
-
-            <div class="card animate-in delay-2">
-                <p class="caption">已发布项目</p>
-                <div class="stat-value"><span id="stat-count">0</span> 个</div>
-                <hr class="divider">
-                <p class="caption" id="last-scan">最近更新：—</p>
-            </div>
-        </section>
+        </header>
 
         <div id="loading" class="card loading-card animate-in delay-3">
             <div class="skeleton" style="width: 40%; margin: 0 auto 16px;"></div>
@@ -89,10 +72,6 @@
         const GITHUB_REPO = 'HTML';
         const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents`;
 
-        function copyServerAddress() {
-            copyText(document.getElementById('server-address').textContent.trim());
-        }
-
         class GitHubProjectManager {
             constructor() {
                 this.serverAddress = `https://${GITHUB_USER}.github.io/${GITHUB_REPO}`;
@@ -105,7 +84,6 @@
                     document.getElementById('server-address').textContent = this.serverAddress;
                     this.allProjects = await this.scanProjects();
                     renderProjects(this.sortByUpdateTime(this.allProjects));
-                    this.updateStats(this.allProjects);
                     this.initSearch();
                 } catch (error) {
                     showError(error.message || '请检查网络或 GitHub 接口状态');
@@ -149,24 +127,13 @@
                 return [...projects].sort((a, b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
             }
 
-            updateStats(projects) {
-                setStats(projects.length);
-                const latest = projects
-                    .map(p => p.date)
-                    .filter(Boolean)
-                    .sort((a, b) => b.getTime() - a.getTime())[0];
-                document.getElementById('last-scan').textContent =
-                    `最近更新：${latest ? latest.toLocaleString() : '未知'}`;
-            }
-
             initSearch() {
                 const searchInput = document.getElementById('search-input');
                 searchInput.addEventListener('input', (e) => {
                     const query = e.target.value.trim().toLowerCase();
                     const matched = this.allProjects
                         .filter(project => project.name.toLowerCase().includes(query));
-                    this.updateStats(matched);
-                    renderProjects(this.sortByUpdateTime(matched));
+                    renderProjects(this.sortByUpdateTime(matched), '没有匹配的项目，换个关键词试试。');
                 });
             }
         }
